@@ -15,6 +15,19 @@
                     <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    
+                    <!-- Admin Navigation -->
+                    <x-nav-link href="{{ route('admin.gallery') }}" :active="request()->routeIs('admin.gallery*')">
+                        {{ __('Gallery') }}
+                    </x-nav-link>
+                    
+                    <x-nav-link href="{{ route('admin.travel-categories') }}" :active="request()->routeIs('admin.travel-categories*')">
+                        {{ __('Travel Categories') }}
+                    </x-nav-link>
+                    
+                    <x-nav-link href="{{ route('admin.site') }}" :active="request()->routeIs('admin.site')">
+                        {{ __('Site Settings') }}
+                    </x-nav-link>
                 </div>
             </div>
 

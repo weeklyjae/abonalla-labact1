@@ -1,174 +1,276 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Abonalla · Portfolio</title>
+@extends('layouts.app')
 
-    {{-- 0) Apply saved theme ASAP (no white flash) --}}
-    <script>
-      (() => {
-        const t = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        document.documentElement.classList.toggle('dark', t ? t === 'dark' : prefersDark);
-      })();
-    </script>
-
-    {{-- 1) Font: Poppins --}}
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=poppins:300,400,500,600&display=swap" rel="stylesheet" />
-
-    {{-- 2) Styles/Scripts --}}
-    @vite(['resources/css/app.css','resources/js/app.js'])
-</head>
-
-<body class="font-sans bg-white text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100">
-    {{-- HEADER / NAV --}}
-    <header class="border-b border-neutral-200/60 dark:border-neutral-800/60">
-        <div class="mx-auto max-w-6xl px-4 sm:px-6 h-16 flex items-center justify-between">
-            <a href="{{ url('/') }}" class="text-sm tracking-widest font-semibold">
-                ABONALLA <span class="opacity-50">·</span> <span class="opacity-70">Portfolio</span>
-            </a>
-
-            <nav class="hidden sm:flex items-center gap-6 text-sm">
-                <a href="#projects" class="hover:opacity-80">Projects</a>
-                <a href="#about" class="hover:opacity-80">About</a>
-                <a href="#contact" class="hover:opacity-80">Contact</a>
-
-                {{-- Theme toggle --}}
-                <button id="themeToggle"
-                        type="button"
-                        class="inline-flex h-8 w-8 items-center justify-center rounded-md border border-neutral-200/60 dark:border-neutral-800/60 hover:bg-neutral-100 dark:hover:bg-neutral-900 transition"
-                        aria-label="Toggle theme">
-                    {{-- Moon (light mode) --}}
-                    <svg class="h-4 w-4 dark:hidden" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-                    {{-- Sun (dark mode) --}}
-                    <svg class="h-4 w-4 hidden dark:block" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4a1 1 0 0 1 1-1h0a1 1 0 1 1-2 0h0a1 1 0 0 1 1 1zm0 17a1 1 0 0 1 1-1h0a1 1 0 1 1-2 0h0a1 1 0 0 1 1 1zm8-9a1 1 0 0 1-1-1h0a1 1 0 1 1 2 0h0a1 1 0 0 1-1 1zM5 12a1 1 0 0 1-1-1h0a1 1 0 1 1 2 0h0a1 1 0 0 1-1 1zM17.31 18.31a1 1 0 0 1 1.41 0h0a1 1 0 1 1-1.41 1.41h0a1 1 0 0 1 0-1.41zM6.28 6.28a1 1 0 0 1 1.41 0h0A1 1 0 1 1 6.28 4.87h0a1 1 0 0 1 0 1.41zM17.72 6.28a1 1 0 0 1 0 1.41h0A1 1 0 1 1 16.31 4.87h0a1 1 0 0 1 1.41 0zM6.28 17.72a1 1 0 0 1 0 1.41h0A1 1 0 1 1 4.87 17.72h0a1 1 0 0 1 1.41 0z"/></svg>
-                </button>
-            </nav>
-        </div>
-    </header>
-
-    <main class="mx-auto max-w-6xl px-4 sm:px-6">
-        {{-- HERO --}}
-        <section class="py-10 sm:py-14">
-            <div class="rounded-2xl border border-neutral-200/60 bg-neutral-50/60 p-6 sm:p-8 dark:bg-neutral-900/60 dark:border-neutral-800/60">
-                <div class="flex items-start gap-4">
-                    <div class="h-12 w-12 shrink-0 rounded-full bg-neutral-200 dark:bg-neutral-800 grid place-items-center">
-                        <span class="text-xs">👨‍💻</span>
-                    </div>
-                    <div class="space-y-2">
-                        <h1 class="text-xl sm:text-2xl font-semibold">Hi, I’m Abonalla — Laravel & Tailwind dev.</h1>
-                        <p class="text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                            I build clean, fast web apps and dashboards for small businesses.
-                            Here are a few projects and a bit about me.
-                        </p>
-                        <div class="flex gap-3 pt-2">
-                            <a href="#projects" class="px-4 py-2 rounded-md border border-neutral-200/70 bg-white hover:bg-neutral-100 dark:bg-neutral-950 dark:border-neutral-800/70 dark:hover:bg-neutral-900 text-sm">See Projects</a>
-                            <a href="#contact" class="px-4 py-2 rounded-md bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 text-sm">Hire Me</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        {{-- PROJECTS --}}
-        <section id="projects" class="py-6 sm:py-8">
-            <div class="flex items-center justify-between mb-4">
-                <h2 class="text-sm font-semibold tracking-wide uppercase text-neutral-500 dark:text-neutral-400">Projects</h2>
-                <a href="#contact" class="text-sm hover:opacity-75">Let’s work together</a>
-            </div>
-
-            <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {{-- Card --}}
-                <article class="rounded-xl overflow-hidden border border-neutral-200/60 dark:border-neutral-800/60 bg-white dark:bg-neutral-900">
-                    <img class="h-36 w-full object-cover" src="https://images.unsplash.com/photo-1556157382-97eda2d62296?q=80&w=1200&auto=format&fit=crop" alt="">
-                    <div class="p-4 space-y-2">
-                        <h3 class="font-medium">Retail POS (Laravel + Livewire)</h3>
-                        <p class="text-sm text-neutral-600 dark:text-neutral-400">Inventory, receipts, daily reports for a local shop.</p>
-                        <div class="flex flex-wrap gap-2 pt-1">
-                            <span class="text-[11px] px-2 py-0.5 rounded border border-neutral-200/70 dark:border-neutral-700/80">Laravel</span>
-                            <span class="text-[11px] px-2 py-0.5 rounded border border-neutral-200/70 dark:border-neutral-700/80">Livewire</span>
-                            <span class="text-[11px] px-2 py-0.5 rounded border border-neutral-200/70 dark:border-neutral-700/80">Tailwind</span>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="rounded-xl overflow-hidden border border-neutral-200/60 dark:border-neutral-800/60 bg-white dark:bg-neutral-900">
-                    <img class="h-36 w-full object-cover" src="https://images.unsplash.com/photo-1526103424300-68a3e33b2b72?q=80&w=1200&auto=format&fit=crop" alt="">
-                    <div class="p-4 space-y-2">
-                        <h3 class="font-medium">Agency Landing</h3>
-                        <p class="text-sm text-neutral-600 dark:text-neutral-400">Responsive site with dark mode, blog, and contact form.</p>
-                        <div class="flex flex-wrap gap-2 pt-1">
-                            <span class="text-[11px] px-2 py-0.5 rounded border border-neutral-200/70 dark:border-neutral-700/80">Blade</span>
-                            <span class="text-[11px] px-2 py-0.5 rounded border border-neutral-200/70 dark:border-neutral-700/80">Alpine</span>
-                            <span class="text-[11px] px-2 py-0.5 rounded border border-neutral-200/70 dark:border-neutral-700/80">Tailwind</span>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="rounded-xl overflow-hidden border border-neutral-200/60 dark:border-neutral-800/60 bg-white dark:bg-neutral-900">
-                    <img class="h-36 w-full object-cover" src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1200&auto=format&fit=crop" alt="">
-                    <div class="p-4 space-y-2">
-                        <h3 class="font-medium">Restaurant Booking</h3>
-                        <p class="text-sm text-neutral-600 dark:text-neutral-400">Reservations, schedule, and SMS reminders.</p>
-                        <div class="flex flex-wrap gap-2 pt-1">
-                            <span class="text-[11px] px-2 py-0.5 rounded border border-neutral-200/70 dark:border-neutral-700/80">Laravel</span>
-                            <span class="text-[11px] px-2 py-0.5 rounded border border-neutral-200/70 dark:border-neutral-700/80">MySQL</span>
-                            <span class="text-[11px] px-2 py-0.5 rounded border border-neutral-200/70 dark:border-neutral-700/80">Twilio</span>
-                        </div>
-                    </div>
-                </article>
-            </div>
-        </section>
-
-        {{-- ABOUT --}}
-        <section id="about" class="py-10 sm:py-12">
-            <div class="rounded-2xl border border-neutral-200/60 dark:border-neutral-800/60 bg-neutral-50/60 dark:bg-neutral-900/60 p-6 sm:p-8">
-                <h2 class="text-base font-semibold mb-2">About me</h2>
-                <p class="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">
-                    I focus on clean UI and smooth UX. Stack: Laravel, Livewire/Inertia, Blade, Tailwind.
-                    I care about accessibility, performance, and maintainable code.
+@section('content')
+{{-- Full Screen Hero Section with Background Photo --}}
+<section class="relative h-screen flex items-center justify-center overflow-hidden">
+    {{-- Background Photo --}}
+    <div class="absolute inset-0 z-0 w-full h-full">
+        <img src="{{ asset('images/bg.JPEG') }}" 
+             alt="weeklyjae Background" 
+             class="h-full w-full object-cover object-center"
+             onerror="this.src='https://via.placeholder.com/1920x1080/1E40AF/FFFFFF?text=weeklyjae+Background'">
+        {{-- Dark overlay for better text readability --}}
+        <div class="absolute inset-0 bg-black/40 dark:bg-black/60"></div>
+    </div>
+    
+    {{-- Hero Content --}}
+    <div class="relative z-10 text-center text-white max-w-6xl mx-auto px-4 sm:px-6">
+        <div class="space-y-8">
+            <div class="space-y-6">
+                <h1 class="text-5xl sm:text-7xl lg:text-8xl font-bold leading-tight animate-fade-in">
+                    Hi, I'm <span class="text-blue-400">weeklyjae</span>
+                </h1>
+                <p class="text-xl sm:text-3xl text-blue-100 max-w-3xl mx-auto animate-fade-in-delay">
+                    Developer, Video Editor, 
+                    Photographer, and Traveller
                 </p>
             </div>
-        </section>
-
-        {{-- CONTACT / CTA --}}
-        <section id="contact" class="py-10 sm:py-12">
-            <div class="rounded-2xl border border-neutral-200/60 dark:border-neutral-800/60 p-6 sm:p-8 flex items-center justify-between gap-4 bg-white dark:bg-neutral-900">
-                <div>
-                    <h3 class="font-medium">Got a project in mind?</h3>
-                    <p class="text-sm text-neutral-600 dark:text-neutral-400">Let’s build something neat together.</p>
-                </div>
-                <a href="mailto:hello@example.com" class="px-4 py-2 rounded-md bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 text-sm">Email me</a>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in-delay-3">
+                <a href="#about" class="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-lg">
+                    Learn More
+                </a>
+                <a href="{{ route('contact') }}" class="px-8 py-4 border-2 border-white hover:bg-white hover:text-blue-900 text-white rounded-lg font-medium transition-all duration-300 transform hover:scale-105">
+                    Get In Touch
+                </a>
             </div>
-        </section>
-    </main>
-
-    {{-- MOBILE NAV + THEME TOGGLE (optional) --}}
-    <div class="sm:hidden fixed bottom-4 right-4">
-        <button id="themeToggleMobile"
-                class="inline-flex h-10 w-10 items-center justify-center rounded-full shadow border border-neutral-200/60 dark:border-neutral-800/60 bg-white/90 dark:bg-neutral-900/90 backdrop-blur">
-            <span class="sr-only">Toggle theme</span>
-            <svg class="h-5 w-5 dark:hidden" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-            <svg class="h-5 w-5 hidden dark:block" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4a1 1 0 0 1 1-1h0a1 1 0 1 1-2 0h0a1 1 0 0 1 1 1zm0 17a1 1 0 0 1 1-1h0a1 1 0 1 1-2 0h0a1 1 0 0 1 1 1zm8-9a1 1 0 0 1-1-1h0a1 1 0 1 1 2 0h0a1 1 0 0 1-1 1zM5 12a1 1 0 0 1-1-1h0a1 1 0 1 1 2 0h0a1 1 0 0 1-1 1zM17.31 18.31a1 1 0 0 1 1.41 0h0a1 1 0 1 1-1.41 1.41h0a1 1 0 0 1 0-1.41zM6.28 6.28a1 1 0 0 1 1.41 0h0A1 1 0 1 1 6.28 4.87h0a1 1 0 0 1 0 1.41zM17.72 6.28a1 1 0 0 1 0 1.41h0A1 1 0 1 1 16.31 4.87h0a1 1 0 0 1 1.41 0zM6.28 17.72a1 1 0 0 1 0 1.41h0A1 1 0 1 1 4.87 17.72h0a1 1 0 0 1 1.41 0z"/></svg>
-        </button>
+        </div>
     </div>
+    
+    {{-- Scroll Indicator --}}
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 animate-bounce">
+        <div class="flex flex-col items-center text-white">
+            <span class="text-sm mb-2">Scroll Down</span>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+            </svg>
+        </div>
+    </div>
+</section>
 
-    {{-- Toggle script --}}
-    <script>
-      (function () {
-        function setTheme(mode) {
-          document.documentElement.classList.toggle('dark', mode === 'dark');
-          localStorage.setItem('theme', mode);
+{{-- About Me Section --}}
+<section id="about" class="py-16 sm:py-20 bg-white dark:bg-neutral-950">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+        <div class="bg-neutral-100 dark:bg-neutral-800 rounded-2xl p-8 sm:p-12">
+            <div class="flex flex-col lg:flex-row gap-8 lg:gap-12 items-center">
+                {{-- Left Side: Profile Photo --}}
+                <div class="w-full lg:w-auto">
+                    <div class="h-96 w-80 rounded-2xl overflow-hidden mx-auto lg:mx-0">
+                        <img src="{{ asset('images/profile.JPEG') }}" 
+                             alt="weeklyjae - Jhon Martin Abonalla" 
+                             class="h-full w-full object-cover"
+                             onerror="this.src='https://via.placeholder.com/320x384/6B7280/FFFFFF?text=Profile+Photo'">
+                    </div>
+                </div>
+                
+                {{-- Right Side: Content --}}
+                <div class="flex-1 space-y-6">
+                    <div class="text-center lg:text-left">
+                        <h2 class="text-3xl sm:text-4xl font-bold mb-4 text-neutral-800 dark:text-neutral-200">About me</h2>
+                        <p class="text-lg text-neutral-700 dark:text-neutral-300 mb-6">
+                        I'm Jhon Martin Abonalla, a fourth-year Information Technology student at the University of Santo Tomas, specializing in Web and Mobile Development. Besides coding, I love editing videos and photography, as well as traveling, which allows me to discover new places and perspectives. These passions inspire me to create projects that combine both technical skill and creativity.
+                        </p>
+                        
+                        {{-- Technology Tags --}}
+                        <div class="flex flex-wrap gap-3 justify-center lg:justify-start">
+                            {{-- PHP --}}
+                            <div class="inline-flex items-center gap-2 px-4 py-2 bg-purple-100 dark:bg-purple-900/30 border border-purple-300 dark:border-purple-700 rounded-full">
+                                <img src="{{ asset('images/php-logo.png') }}" alt="PHP" class="w-8 h-5 object-contain">
+                                <span class="text-sm font-medium text-purple-700 dark:text-purple-300">PHP</span>
+                            </div>
+                            
+                            {{-- C++ --}}
+                            <div class="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/30 border border-blue-300 dark:border-blue-700 rounded-full">
+                                <img src="{{ asset('images/cpp-logo.png') }}" alt="C++" class="w-5 h-5 object-contain">
+                                <span class="text-sm font-medium text-blue-700 dark:text-blue-300">C++</span>
+                            </div>
+                            
+                            {{-- ASP.NET --}}
+                            <div class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-100 dark:bg-indigo-900/30 border border-indigo-300 dark:border-indigo-700 rounded-full">
+                                <img src="{{ asset('images/aspnet-logo.png') }}" alt="ASP.NET" class="w-5 h-5 object-contain">
+                                <span class="text-sm font-medium text-indigo-700 dark:text-indigo-300">ASP.NET</span>
+                            </div>
+                            
+                            {{-- JavaScript --}}
+                            <div class="inline-flex items-center gap-2 px-4 py-2 bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-300 dark:border-yellow-700 rounded-full">
+                                <img src="{{ asset('images/js-logo.png') }}" alt="JavaScript" class="w-5 h-5 object-contain">
+                                <span class="text-sm font-medium text-yellow-700 dark:text-yellow-300">JavaScript</span>
+                            </div>
+                            
+                            {{-- React --}}
+                            <div class="inline-flex items-center gap-2 px-4 py-2 bg-cyan-100 dark:bg-cyan-900/30 border border-cyan-300 dark:border-cyan-700 rounded-full">
+                                <img src="{{ asset('images/react-logo.png') }}" alt="React" class="w-5 h-5 object-contain">
+                                <span class="text-sm font-medium text-cyan-700 dark:text-cyan-300">React</span>
+                            </div>
+                            
+                            {{-- Kotlin --}}
+                            <div class="inline-flex items-center gap-2 px-4 py-2 bg-orange-100 dark:bg-orange-900/30 border border-orange-300 dark:border-orange-700 rounded-full">
+                                <img src="{{ asset('images/kotlin-logo.png') }}" alt="Kotlin" class="w-5 h-5 object-contain">
+                                <span class="text-sm font-medium text-orange-700 dark:text-orange-300">Kotlin</span>
+                            </div>
+                            
+                            {{-- Laravel --}}
+                            <div class="inline-flex items-center gap-2 px-4 py-2 bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700 rounded-full">
+                                <img src="{{ asset('images/laravel-logo.png') }}" alt="Laravel" class="w-5 h-5 object-contain">
+                                <span class="text-sm font-medium text-red-700 dark:text-red-300">Laravel</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{{-- Featured Images --}}
+@if(isset($featuredImages) && is_array($featuredImages) && count($featuredImages) > 0)
+<section class="py-16 sm:py-24 bg-neutral-50 dark:bg-neutral-900">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold mb-4">Featured Work</h2>
+            <p class="text-neutral-600 dark:text-neutral-400">A glimpse of my latest projects</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            @foreach($featuredImages as $image)
+                @php
+                    $folder = explode('/', $image)[1] ?? 'coding';
+                    $route = match($folder) {
+                        'coding' => route('coding'),
+                        'editing' => route('editing'),
+                        'travel' => route('travel'),
+                        default => route('coding')
+                    };
+                @endphp
+                
+                <div class="group cursor-pointer" onclick="window.location.href='{{ $route }}'">
+                    <div class="rounded-xl overflow-hidden border border-neutral-200/60 dark:border-neutral-800/60 bg-white dark:bg-neutral-900 hover:shadow-lg transition-all duration-300 h-full">
+                        <div class="w-full h-48 overflow-hidden">
+                            <img class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300" 
+                                 src="{{ Storage::disk('public')->url($image) }}" 
+                                 alt="Featured {{ ucfirst($folder) }} work">
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-medium text-center capitalize">{{ $folder }} Work</h3>
+                            <p class="text-sm text-neutral-600 dark:text-neutral-400 text-center mt-1">
+                                Click to see more
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+@endif
+
+{{-- Quick Links --}}
+<section class="py-16 sm:py-24 bg-white dark:bg-neutral-950">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+        <div class="grid md:grid-cols-3 gap-8">
+            {{-- Coding --}}
+            <div class="group cursor-pointer" onclick="window.location.href='{{ route('coding') }}'">
+                <div class="rounded-2xl border border-neutral-200/60 dark:border-neutral-800/60 bg-neutral-50/60 dark:bg-neutral-900/60 p-8 hover:shadow-lg transition-all duration-300">
+                    <div class="space-y-4">
+                        <div class="h-12 w-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 grid place-items-center">
+                            <span class="text-2xl">💻</span>
+                        </div>
+                        <h3 class="text-xl font-semibold">Coding Projects</h3>
+                        <p class="text-neutral-600 dark:text-neutral-400">
+                            Web applications, mobile apps, and software solutions
+                        </p>
+                        <div class="flex items-center text-blue-600 dark:text-blue-400 font-medium group-hover:translate-x-1 transition-transform">
+                            View Projects
+                            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Editing --}}
+            <div class="group cursor-pointer" onclick="window.location.href='{{ route('editing') }}'">
+                <div class="rounded-2xl border border-neutral-200/60 dark:border-neutral-800/60 bg-neutral-50/60 dark:bg-neutral-900/60 p-8 hover:shadow-lg transition-all duration-300">
+                    <div class="space-y-4">
+                        <div class="h-12 w-12 rounded-xl bg-green-100 dark:bg-green-900/30 grid place-items-center">
+                            <span class="text-2xl">🎬</span>
+                        </div>
+                        <h3 class="text-xl font-semibold">Video Editing & Photography</h3>
+                        <p class="text-neutral-600 dark:text-neutral-400">
+                            Cinematic edits, creative visuals, and captured moments
+                        </p>
+                        <div class="flex items-center text-green-600 dark:text-green-400 font-medium group-hover:translate-x-1 transition-transform">
+                            View Videos & Photos
+                            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Travel --}}
+            <div class="group cursor-pointer" onclick="window.location.href='{{ route('travel') }}'">
+                <div class="rounded-2xl border border-neutral-200/60 dark:border-neutral-800/60 bg-neutral-50/60 dark:bg-neutral-900/60 p-8 hover:shadow-lg transition-all duration-300">
+                    <div class="space-y-4">
+                        <div class="h-12 w-12 rounded-xl bg-purple-100 dark:bg-purple-900/30 grid place-items-center">
+                            <span class="text-2xl">✈️</span>
+                        </div>
+                        <h3 class="text-xl font-semibold">Travels</h3>
+                        <p class="text-neutral-600 dark:text-neutral-400">
+                            Exploring new places and experiences
+                        </p>
+                        <div class="flex items-center text-purple-600 dark:text-purple-400 font-medium group-hover:translate-x-1 transition-transform">
+                            View Locations & Photos
+                            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{{-- Custom CSS for animations --}}
+<style>
+    @keyframes fade-in {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .animate-fade-in {
+        animation: fade-in 1s ease-out;
+    }
+    
+    .animate-fade-in-delay {
+        animation: fade-in 1s ease-out 0.3s both;
+    }
+    
+    .animate-fade-in-delay-2 {
+        animation: fade-in 1s ease-out 0.6s both;
+    }
+    
+    .animate-fade-in-delay-3 {
+        animation: fade-in 1s ease-out 0.9s both;
+    }
+    
+    .animate-bounce {
+        animation: bounce 2s infinite;
+    }
+    
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0) translateX(-50%);
         }
-        function toggle() {
-          const isDark = document.documentElement.classList.contains('dark');
-          setTheme(isDark ? 'light' : 'dark');
+        40% {
+            transform: translateY(-10px) translateX(-50%);
         }
-        document.getElementById('themeToggle')?.addEventListener('click', toggle);
-        document.getElementById('themeToggleMobile')?.addEventListener('click', toggle);
-      })();
-    </script>
-</body>
-</html>
+        60% {
+            transform: translateY(-5px) translateX(-50%);
+        }
+    }
+</style>
+@endsection

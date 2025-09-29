@@ -43,6 +43,15 @@
                     {{ __('Log in') }}
                 </x-button>
             </div>
+
+            <div class="flex items-center justify-center mt-6">
+                <span class="text-sm text-gray-600 dark:text-gray-400">
+                    {{ __("Don't have an account?") }}
+                </span>
+                <a class="ml-2 text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('register') }}">
+                    {{ __('Register') }}
+                </a>
+            </div>
         </form>
     </x-authentication-card>
 </x-guest-layout>
