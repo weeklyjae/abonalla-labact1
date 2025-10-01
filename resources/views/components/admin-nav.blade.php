@@ -28,6 +28,12 @@
                     <span class="text-lg mr-2">⚙️</span>
                     Site Settings
                 </a>
+
+                <a href="{{ route('admin.contact-messages.index') }}" 
+                   class="flex items-center p-3 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors {{ request()->routeIs('admin.contact-messages*') ? 'ring-2 ring-indigo-500 bg-indigo-50 dark:bg-indigo-900/20' : '' }}">
+                    <span class="text-lg mr-2">📬</span>
+                    Contact Submissions
+                </a>
                 
             </div>
         </div>

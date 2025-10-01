@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('contact_messages', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email');
-            $table->text('message');
-            $table->timestamps();
-            $table->softDeletes();
+        Schema::table('contact_messages', function (Blueprint $table) {
+            if (!Schema::hasColumn('contact_messages', 'deleted_at')) {
+                $table->softDeletes();
+            }
         });
     }
 
@@ -26,6 +23,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('contact_messages');
+        Schema::table('contact_messages', function (Blueprint $table) {
+            $table->dropSoftDeletes();
+        });
     }
 };

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth" x-data>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -24,11 +24,13 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+    <style>[x-cloak]{display:none!important;}</style>
+
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="font-sans antialiased bg-white dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100">
-    <header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300" id="navbar">
+<body class="font-sans antialiased bg-white dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100" x-data="toastComponent()" @notify.window="show($event.detail)" x-init="init($refs.toastTitle, $refs.toastMessage)">
+    <header class="fixed top-0 left-0 right-0 z-[80] transition-all duration-300" id="navbar">
         <div class="mx-auto max-w-6xl px-4 sm:px-6 h-16 flex items-center justify-between">
             <a href="{{ route('home') }}" class="hover:opacity-80">
                 <img src="{{ asset('images/logo.png') }}" alt="weeklyjae Logo" class="h-8 w-auto" id="logoImage" style="filter: invert(1);">
@@ -43,7 +45,9 @@
                 @guest
                     <a href="{{ route('login') }}" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors duration-200">Login</a>
                 @else
-                                            <a href="{{ route('admin.home') }}" class="text-blue-600 dark:text-blue-400 hover:opacity-80 transition-opacity">Admin</a>
+                    @if(Auth::user() && Auth::user()->role === 'admin')
+                        <a href="{{ route('admin.home') }}" class="text-blue-600 dark:text-blue-400 hover:opacity-80 transition-opacity">Admin</a>
+                    @endif
                     <form method="POST" action="{{ route('logout') }}" class="inline">
                         @csrf
                         <button type="submit" class="px-4 py-2 text-sm font-medium text-red-600 border border-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors duration-200">Logout</button>
@@ -84,7 +88,9 @@
                     </div>
                 @else
                     <div class="pt-4 border-t border-neutral-200/60 dark:border-neutral-800/60">
-                        <a href="{{ route('admin.home') }}" class="block px-3 py-2 text-base font-medium text-blue-600 dark:text-blue-400 hover:bg-neutral-800 rounded-md transition-colors">Admin</a>
+                        @if(Auth::user() && Auth::user()->role === 'admin')
+                            <a href="{{ route('admin.home') }}" class="block px-3 py-2 text-base font-medium text-blue-600 dark:text-blue-400 hover:bg-neutral-800 rounded-md transition-colors">Admin</a>
+                        @endif
                         <form method="POST" action="{{ route('logout') }}" class="block">
                             @csrf
                             <button type="submit" class="w-full text-left px-3 py-2 text-base font-medium text-red-600 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-md transition-colors">Logout</button>
@@ -96,6 +102,9 @@
     </header>
 
     <main>
+        @if (session('success'))
+            <span x-init="$dispatch('notify', { title: 'Success', message: '{{ session('success') }}' })"></span>
+        @endif
         @yield('content')
     </main>
 
@@ -105,7 +114,63 @@
         </div>
     </footer>
 
+    <div class="fixed top-4 right-4 z-[100] pointer-events-none flex flex-col items-end space-y-3">
+        <div x-show="visible" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 translate-y-2" class="w-full max-w-xs" x-cloak>
+            <div class="pointer-events-auto rounded-xl border border-emerald-200/60 dark:border-emerald-500/40 bg-white dark:bg-emerald-950/80 shadow-2xl shadow-emerald-600/20 backdrop-blur-sm">
+                <div class="flex items-start gap-3 px-5 py-4">
+                    <div class="mt-0.5 inline-flex h-10 w-10 items-center justify-center rounded-full bg-emerald-600/10 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M16.704 5.29a1 1 0 00-1.408-1.42l-6.5 6.444-2.093-2.05a1 1 0 00-1.406 1.422l2.796 2.738a1 1 0 001.406 0l7.205-7.134z" clip-rule="evenodd" />
+                            <path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0z" />
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm font-semibold text-emerald-700 dark:text-emerald-200" x-ref="toastTitle"></p>
+                        <p class="mt-1 text-sm text-emerald-600/90 dark:text-emerald-200/90" x-ref="toastMessage"></p>
+                    </div>
+                    <button type="button" class="text-emerald-500 hover:text-emerald-600 dark:text-emerald-200/80 dark:hover:text-emerald-100 transition" @click="hide()" aria-label="Dismiss notification">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @stack('scripts')
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
     <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('toastComponent', () => ({
+                visible: false,
+                timeoutId: null,
+                titleEl: null,
+                messageEl: null,
+                init(titleEl, messageEl) {
+                    this.titleEl = titleEl;
+                    this.messageEl = messageEl;
+                },
+                show({ title = 'Success', message = 'Action completed successfully.' } = {}) {
+                    if (this.timeoutId) {
+                        clearTimeout(this.timeoutId);
+                    }
+                    if (this.titleEl) this.titleEl.textContent = title;
+                    if (this.messageEl) this.messageEl.textContent = message;
+                    this.visible = true;
+                    this.timeoutId = setTimeout(() => this.hide(), 3500);
+                },
+                hide() {
+                    this.visible = false;
+                    if (this.timeoutId) {
+                        clearTimeout(this.timeoutId);
+                        this.timeoutId = null;
+                    }
+                }
+            }));
+        });
+
         // Theme toggle functionality
         const themeToggle = document.getElementById('themeToggle');
         const sunIcon = document.getElementById('sunIcon');

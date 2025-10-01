@@ -8,6 +8,8 @@ use App\Http\Controllers\Admin\TravelCategoryController;
 use App\Http\Controllers\Admin\TravelPhotoController;
 use App\Http\Controllers\Admin\MediaCategoryController;
 use App\Http\Controllers\Admin\MediaItemController;
+use App\Http\Controllers\Admin\ContactMessageController;
+use App\Http\Controllers\ContactController;
 use App\Http\Middleware\EnsureTokenIsValid;
 
 // Public routes
@@ -18,6 +20,7 @@ Route::get('/coding', [PortfolioController::class, 'coding'])->name('coding');
 Route::get('/editing', [PortfolioController::class, 'editing'])->name('editing');
 Route::get('/travel', [PortfolioController::class, 'travel'])->name('travel');
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.submit');
 
 Route::get('/error', function () {
     return view('error');
@@ -52,6 +55,12 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/travel/{category}', function () { return back(); })->name('travel.destroy');
         Route::get('/travel-categories', [TravelCategoryController::class, 'index'])->name('travel-categories');
         Route::get('/travel-photos', [TravelPhotoController::class, 'index'])->name('travel-photos');
+
+        Route::get('/contact-messages', [ContactMessageController::class, 'index'])->name('contact-messages.index');
+        Route::patch('/contact-messages/{contactMessage}', [ContactMessageController::class, 'update'])->name('contact-messages.update');
+        Route::delete('/contact-messages/{contactMessage}', [ContactMessageController::class, 'destroy'])->name('contact-messages.destroy');
+        Route::post('/contact-messages/{id}/restore', [ContactMessageController::class, 'restore'])->name('contact-messages.restore');
+        Route::delete('/contact-messages/{id}/force', [ContactMessageController::class, 'forceDelete'])->name('contact-messages.force-delete');
 
         // Admin: posts (static views)
         Route::get('/posts', function () {
