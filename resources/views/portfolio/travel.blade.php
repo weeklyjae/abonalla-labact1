@@ -92,17 +92,17 @@
             <section class="pb-16 sm:pb-20">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <div class="rounded-xl overflow-hidden border border-neutral-200/60 dark:border-neutral-800/60 bg-white dark:bg-neutral-900">
-                        <img class="h-64 w-full object-cover" src="/images/bg.JPEG" alt="Beach">
+                        <img class="h-64 w-full object-cover" src="/images/bg.JPEG" alt="Temple">
                         <div class="p-4">
-                            <h3 class="font-medium text-lg">Beach Getaway</h3>
-                            <p class="text-sm text-neutral-600 dark:text-neutral-400 mt-1">Sunset and shoreline</p>
+                            <h3 class="font-medium text-lg">Temple Run</h3>
+                            <p class="text-sm text-neutral-600 dark:text-neutral-400 mt-1">Chasing ornate temples at golden hour.</p>
                         </div>
                     </div>
                     <div class="rounded-xl overflow-hidden border border-neutral-200/60 dark:border-neutral-800/60 bg-white dark:bg-neutral-900">
-                        <img class="h-64 w-full object-cover" src="/images/profile.JPEG" alt="City">
+                        <img class="h-64 w-full object-cover" src="/images/profile.JPEG" alt="Cafe">
                         <div class="p-4">
-                            <h3 class="font-medium text-lg">City Walk</h3>
-                            <p class="text-sm text-neutral-600 dark:text-neutral-400 mt-1">Street photography</p>
+                            <h3 class="font-medium text-lg">Cafe Hoppings</h3>
+                            <p class="text-sm text-neutral-600 dark:text-neutral-400 mt-1">Pour-overs, pastries, and cozy corners.</p>
                         </div>
                     </div>
                     <div class="rounded-xl overflow-hidden border border-neutral-200/60 dark:border-neutral-800/60 bg-white dark:bg-neutral-900">

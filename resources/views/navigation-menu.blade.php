@@ -16,18 +16,17 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
                     
-                    <!-- Admin Navigation -->
-                    <x-nav-link href="{{ route('admin.gallery') }}" :active="request()->routeIs('admin.gallery*')">
-                        {{ __('Gallery') }}
-                    </x-nav-link>
-                    
-                    <x-nav-link href="{{ route('admin.travel-categories') }}" :active="request()->routeIs('admin.travel-categories*')">
-                        {{ __('Travel Categories') }}
-                    </x-nav-link>
-                    
-                    <x-nav-link href="{{ route('admin.site') }}" :active="request()->routeIs('admin.site')">
-                        {{ __('Site Settings') }}
-                    </x-nav-link>
+                    @if(Auth::user() && Auth::user()->hasRole('admin'))
+                        <x-nav-link href="{{ route('admin.dashboard') }}" :active="request()->routeIs('admin.dashboard')">
+                            Dashboard
+                        </x-nav-link>
+                        <x-nav-link href="{{ route('admin.site-settings') }}" :active="request()->routeIs('admin.site-settings*')">
+                            Site Settings
+                        </x-nav-link>
+                        <x-nav-link href="{{ route('admin.contact-messages.index') }}" :active="request()->routeIs('admin.contact-messages*')">
+                            Contact Messages
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 

@@ -16,6 +16,8 @@ class ContactMessage extends Model
         'email',
         'message',
         'user_id',
+        'image_path',
+        'images'
     ];
 
     public function user()

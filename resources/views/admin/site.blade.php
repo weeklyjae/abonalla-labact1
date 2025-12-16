@@ -5,18 +5,21 @@
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
             <div class="p-6 lg:p-8 bg-white dark:bg-gray-800 dark:bg-gradient-to-bl dark:from-gray-700/50 dark:via-transparent border-b border-gray-200 dark:border-gray-700">
-                <h1 class="text-2xl font-medium text-gray-900 dark:text-gray-100">
-                    Site Settings
-                </h1>
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    Update your homepage content and site information
-                </p>
+                <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <h1 class="text-2xl font-medium text-gray-900 dark:text-gray-100">Site Settings</h1>
+                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Update global site information, brand colors, and contact details.</p>
+                    </div>
+                    <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center gap-2 text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:underline">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.5L8.25 12 15 4.5" />
+                        </svg>
+                        Back to Dashboard
+                    </a>
+                </div>
             </div>
 
-            <div class="bg-gray-50 dark:bg-gray-700/50 bg-gradient-to-bl dark:from-gray-700/50 dark:via-transparent p-6 lg:p-8">
-                <!-- Admin Navigation -->
-                <x-admin-nav />
-                
+            <div class="bg-gray-50 dark:bg-gray-700/50 bg-gradient-to-bl dark:from-gray-700/50 dark:via-transparent p-6 lg:p-8 space-y-6">
                 @if(session('success'))
                     <div class="mb-8">
                         <div class="bg-green-100 dark:bg-green-900/30 border border-green-200 dark:border-green-800 text-green-800 dark:text-green-200 px-4 py-3 rounded-lg">
@@ -27,7 +30,7 @@
 
                 <!-- Site Settings Form -->
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                    <form action="{{ route('admin.site.store') }}" method="POST" class="space-y-6">
+                    <form action="{{ route('admin.site-settings.store') }}" method="POST" class="space-y-6">
                         @csrf
                         
                         <!-- Hero Title -->

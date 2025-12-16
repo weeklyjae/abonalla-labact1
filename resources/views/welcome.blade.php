@@ -123,53 +123,24 @@
 </section>
 
 {{-- Featured Images --}}
-@if(isset($featuredImages) && is_array($featuredImages) && count($featuredImages) > 0)
+{{-- Featured Work placeholder --}}
 <section class="py-16 sm:py-24 bg-neutral-50 dark:bg-neutral-900">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl font-bold mb-4">Featured Work</h2>
-            <p class="text-neutral-600 dark:text-neutral-400">A glimpse of my latest projects</p>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            @foreach($featuredImages as $image)
-                @php
-                    $folder = explode('/', $image)[1] ?? 'coding';
-                    $route = match($folder) {
-                        'coding' => route('coding'),
-                        'editing' => route('editing'),
-                        'travel' => route('travel'),
-                        default => route('coding')
-                    };
-                @endphp
-                
-                <div class="group cursor-pointer" onclick="window.location.href='{{ $route }}'">
-                    <div class="rounded-xl overflow-hidden border border-neutral-200/60 dark:border-neutral-800/60 bg-white dark:bg-neutral-900 hover:shadow-lg transition-all duration-300 h-full">
-                        <div class="w-full h-48 overflow-hidden">
-                            <img class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300" 
-                                 src="{{ Storage::disk('public')->url($image) }}" 
-                                 alt="Featured {{ ucfirst($folder) }} work">
-                        </div>
-                        <div class="p-4">
-                            <h3 class="font-medium text-center capitalize">{{ $folder }} Work</h3>
-                            <p class="text-sm text-neutral-600 dark:text-neutral-400 text-center mt-1">
-                                Click to see more
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            @endforeach
-        </div>
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center">
+        <h2 class="text-3xl font-bold mb-4">Featured Work</h2>
+        <p class="text-neutral-600 dark:text-neutral-400 max-w-2xl mx-auto">
+            Highlight recent projects here once the dynamic gallery is ready.
+            Pull images from storage or a database and link each card to the
+            relevant page.
+        </p>
     </div>
 </section>
-@endif
 
 {{-- Quick Links --}}
 <section class="py-16 sm:py-24 bg-white dark:bg-neutral-950">
     <div class="max-w-6xl mx-auto px-4 sm:px-6">
         <div class="grid md:grid-cols-3 gap-8">
             {{-- Coding --}}
-            <div class="group cursor-pointer" onclick="window.location.href='{{ route('coding') }}'">
+            <a href="{{ route('coding') }}" class="group block cursor-pointer">
                 <div class="rounded-2xl border border-neutral-200/60 dark:border-neutral-800/60 bg-neutral-50/60 dark:bg-neutral-900/60 p-8 hover:shadow-lg transition-all duration-300">
                     <div class="space-y-4">
                         <div class="h-12 w-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 grid place-items-center">
@@ -187,10 +158,10 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
 
             {{-- Editing --}}
-            <div class="group cursor-pointer" onclick="window.location.href='{{ route('editing') }}'">
+            <a href="{{ route('editing') }}" class="group block cursor-pointer">
                 <div class="rounded-2xl border border-neutral-200/60 dark:border-neutral-800/60 bg-neutral-50/60 dark:bg-neutral-900/60 p-8 hover:shadow-lg transition-all duration-300">
                     <div class="space-y-4">
                         <div class="h-12 w-12 rounded-xl bg-green-100 dark:bg-green-900/30 grid place-items-center">
@@ -208,10 +179,10 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
 
             {{-- Travel --}}
-            <div class="group cursor-pointer" onclick="window.location.href='{{ route('travel') }}'">
+            <a href="{{ route('travel') }}" class="group block cursor-pointer">
                 <div class="rounded-2xl border border-neutral-200/60 dark:border-neutral-800/60 bg-neutral-50/60 dark:bg-neutral-900/60 p-8 hover:shadow-lg transition-all duration-300">
                     <div class="space-y-4">
                         <div class="h-12 w-12 rounded-xl bg-purple-100 dark:bg-purple-900/30 grid place-items-center">
@@ -229,7 +200,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
     </div>
 </section>

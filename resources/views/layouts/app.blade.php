@@ -29,31 +29,49 @@
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="font-sans antialiased bg-white dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100" x-data="toastComponent()" @notify.window="show($event.detail)" x-init="init($refs.toastTitle, $refs.toastMessage)">
+@php
+    $isAdminSection = request()->routeIs('admin.*');
+    $isAdminUser = Auth::check() && Auth::user()->role === 'admin';
+@endphp
+<body class="font-sans antialiased text-neutral-900 dark:text-neutral-100 {{ $isAdminSection ? 'bg-gradient-to-br from-blue-50 via-white to-sky-100' : 'bg-white dark:bg-neutral-950' }}" x-data="toastComponent()" @notify.window="show($event.detail)" x-init="init($refs.toastTitle, $refs.toastMessage)">
+    @if($isAdminSection)
+        <div aria-hidden="true" class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+            <div class="absolute -top-40 -left-24 h-[28rem] w-[28rem] rounded-full bg-blue-200/60 blur-3xl"></div>
+            <div class="absolute top-1/3 right-0 h-[32rem] w-[32rem] translate-x-1/4 rounded-full bg-indigo-200/40 blur-[140px]"></div>
+            <div class="absolute bottom-[-10rem] left-1/2 h-[30rem] w-[30rem] -translate-x-1/2 rounded-full bg-sky-200/40 blur-[160px]"></div>
+        </div>
+    @endif
     <header class="fixed top-0 left-0 right-0 z-[80] transition-all duration-300" id="navbar">
         <div class="mx-auto max-w-6xl px-4 sm:px-6 h-16 flex items-center justify-between">
             <a href="{{ route('home') }}" class="hover:opacity-80">
                 <img src="{{ asset('images/logo.png') }}" alt="weeklyjae Logo" class="h-8 w-auto" id="logoImage" style="filter: invert(1);">
             </a>
             <nav class="hidden sm:flex items-center gap-6 text-sm">
-                <a href="{{ route('coding') }}" class="hover:opacity-80 transition-opacity">Coding</a>
-                <a href="{{ route('editing') }}" class="hover:opacity-80 transition-opacity">Editing</a>
-                <a href="{{ route('travel') }}" class="hover:opacity-80 transition-opacity">Travel</a>
-                <a href="{{ route('contact') }}" class="hover:opacity-80 transition-opacity">Contact</a>
-                
+                @if($isAdminSection && $isAdminUser)
+                    <a href="{{ route('home') }}" class="hover:opacity-80 transition-opacity font-medium">Home</a>
+                    <a href="{{ route('admin.dashboard') }}" class="hover:opacity-80 transition-opacity font-medium {{ request()->routeIs('admin.dashboard') ? 'text-blue-600 dark:text-blue-400' : '' }}">Dashboard</a>
+                    <a href="{{ route('admin.site-settings') }}" class="hover:opacity-80 transition-opacity">Site Settings</a>
+                    <a href="{{ route('admin.contact-messages.index') }}" class="hover:opacity-80 transition-opacity">Contact Messages</a>
+                @else
+                    <a href="{{ route('coding') }}" class="hover:opacity-80 transition-opacity">Coding</a>
+                    <a href="{{ route('editing') }}" class="hover:opacity-80 transition-opacity">Editing</a>
+                    <a href="{{ route('travel') }}" class="hover:opacity-80 transition-opacity">Travel</a>
+                    <a href="{{ route('contact') }}" class="hover:opacity-80 transition-opacity">Contact</a>
+                @endif
+
                 {{-- Authentication Buttons --}}
                 @guest
                     <a href="{{ route('login') }}" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors duration-200">Login</a>
                 @else
-                    @if(Auth::user() && Auth::user()->role === 'admin')
-                        <a href="{{ route('admin.home') }}" class="text-blue-600 dark:text-blue-400 hover:opacity-80 transition-opacity">Admin</a>
+                    @if($isAdminUser && !$isAdminSection)
+                        <a href="{{ route('admin.dashboard') }}" class="text-blue-600 dark:text-blue-400 hover:opacity-80 transition-opacity">Admin</a>
                     @endif
                     <form method="POST" action="{{ route('logout') }}" class="inline">
                         @csrf
                         <button type="submit" class="px-4 py-2 text-sm font-medium text-red-600 border border-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors duration-200">Logout</button>
                     </form>
                 @endguest
-                
+
                 <button id="themeToggle" class="p-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
                     <svg id="sunIcon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
@@ -76,11 +94,18 @@
         {{-- Mobile Navigation Menu --}}
         <div class="sm:hidden" id="mobileMenu">
             <div class="px-2 pt-2 pb-3 space-y-1 bg-white/95 dark:bg-neutral-950/95 backdrop-blur-md border-t border-neutral-200/60 dark:border-neutral-800/60">
-                <a href="{{ route('coding') }}" class="block px-3 py-2 text-base font-medium text-neutral-900 dark:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-md transition-colors">Coding</a>
-                <a href="{{ route('editing') }}" class="block px-3 py-2 text-base font-medium text-neutral-900 dark:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-md transition-colors">Editing</a>
-                <a href="{{ route('travel') }}" class="block px-3 py-2 text-base font-medium text-neutral-900 dark:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-md transition-colors">Travel</a>
-                <a href="{{ route('contact') }}" class="block px-3 py-2 text-base font-medium text-neutral-900 dark:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-md transition-colors">Contact</a>
-                
+                @if($isAdminSection && $isAdminUser)
+                    <a href="{{ route('home') }}" class="block px-3 py-2 text-base font-medium text-neutral-900 dark:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-md transition-colors">Home</a>
+                    <a href="{{ route('admin.dashboard') }}" class="block px-3 py-2 text-base font-medium text-neutral-900 dark:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-md transition-colors {{ request()->routeIs('admin.dashboard') ? 'text-blue-600 dark:text-blue-400' : '' }}">Dashboard</a>
+                    <a href="{{ route('admin.site-settings') }}" class="block px-3 py-2 text-base font-medium text-neutral-900 dark:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-md transition-colors">Site Settings</a>
+                    <a href="{{ route('admin.contact-messages.index') }}" class="block px-3 py-2 text-base font-medium text-neutral-900 dark:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-md transition-colors">Contact Messages</a>
+                @else
+                    <a href="{{ route('coding') }}" class="block px-3 py-2 text-base font-medium text-neutral-900 dark:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-md transition-colors">Coding</a>
+                    <a href="{{ route('editing') }}" class="block px-3 py-2 text-base font-medium text-neutral-900 dark:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-md transition-colors">Editing</a>
+                    <a href="{{ route('travel') }}" class="block px-3 py-2 text-base font-medium text-neutral-900 dark:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-md transition-colors">Travel</a>
+                    <a href="{{ route('contact') }}" class="block px-3 py-2 text-base font-medium text-neutral-900 dark:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-md transition-colors">Contact</a>
+                @endif
+
                 {{-- Mobile Authentication Buttons --}}
                 @guest
                     <div class="pt-4 border-t border-neutral-200/60 dark:border-neutral-800/60">
@@ -88,8 +113,8 @@
                     </div>
                 @else
                     <div class="pt-4 border-t border-neutral-200/60 dark:border-neutral-800/60">
-                        @if(Auth::user() && Auth::user()->role === 'admin')
-                            <a href="{{ route('admin.home') }}" class="block px-3 py-2 text-base font-medium text-blue-600 dark:text-blue-400 hover:bg-neutral-800 rounded-md transition-colors">Admin</a>
+                        @if($isAdminUser && !$isAdminSection)
+                            <a href="{{ route('admin.dashboard') }}" class="block px-3 py-2 text-base font-medium text-blue-600 dark:text-blue-400 hover:bg-neutral-800 rounded-md transition-colors">Admin</a>
                         @endif
                         <form method="POST" action="{{ route('logout') }}" class="block">
                             @csrf
@@ -101,7 +126,7 @@
         </div>
     </header>
 
-    <main>
+    <main class="{{ request()->routeIs('home') ? '' : 'pt-16 sm:pt-20' }}">
         @if (session('success'))
             <span x-init="$dispatch('notify', { title: 'Success', message: '{{ session('success') }}' })"></span>
         @endif

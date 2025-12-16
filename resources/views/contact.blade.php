@@ -13,31 +13,89 @@
             </div>
 
             <div class="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-lg p-6">
-                <form action="{{ route('contact.submit') }}" method="post" class="space-y-4" id="contactForm" novalidate>
-                    @csrf
+            <form action="{{ route('contact.submit') }}" method="post" class="space-y-4" id="contactForm" novalidate enctype="multipart/form-data">
+                @csrf
+                @guest
                     <div>
                         <label for="name" class="block text-sm font-medium mb-1">Name</label>
                         <input id="name" name="name" type="text" placeholder="Your full name" value="{{ old('name') }}" class="w-full rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required />
-                        <div class="mt-2 hidden rounded-md border border-red-300 bg-red-100 px-3 py-2 text-sm text-red-700" data-error-for="name"></div>
+                        @error('name')
+                            <div class="mt-2 rounded-md border border-red-300 bg-red-100 px-3 py-2 text-sm text-red-700 dark:border-red-700 dark:bg-red-900/40 dark:text-red-200">
+                                {{ $message }}
+                            </div>
+                        @enderror
                     </div>
                     <div>
                         <label for="email" class="block text-sm font-medium mb-1">Email</label>
                         <input id="email" name="email" type="email" placeholder="you@example.com" value="{{ old('email') }}" class="w-full rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required />
-                        <div class="mt-2 hidden rounded-md border border-red-300 bg-red-100 px-3 py-2 text-sm text-red-700" data-error-for="email"></div>
+                        @error('email')
+                            <div class="mt-2 rounded-md border border-red-300 bg-red-100 px-3 py-2 text-sm text-red-700 dark:border-red-700 dark:bg-red-900/40 dark:text-red-200">
+                                {{ $message }}
+                            </div>
+                        @enderror
                     </div>
-                    <div>
-                        <label for="message" class="block text-sm font-medium mb-1">Message</label>
-                        <textarea id="message" name="message" rows="5" placeholder="Write your message..." class="w-full rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>{{ old('message') }}</textarea>
-                        <div class="mt-2 hidden rounded-md border border-red-300 bg-red-100 px-3 py-2 text-sm text-red-700" data-error-for="message"></div>
+                @else
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Name</label>
+                            <input type="text" value="{{ Auth::user()->name }}" class="w-full rounded-md border border-neutral-300 dark:border-neutral-700 bg-neutral-100 dark:bg-neutral-800/60 px-3 py-2 text-neutral-600 dark:text-neutral-300" disabled />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Email</label>
+                            <input type="email" value="{{ Auth::user()->email }}" class="w-full rounded-md border border-neutral-300 dark:border-neutral-700 bg-neutral-100 dark:bg-neutral-800/60 px-3 py-2 text-neutral-600 dark:text-neutral-300" disabled />
+                        </div>
                     </div>
-                    <div class="pt-2">
-                        <button type="submit" class="inline-flex items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            Send Message
-                        </button>
-                    </div>
-                </form>
-                <div id="contactSuccess" class="hidden opacity-0 transition-opacity duration-500 ease-in mt-6 rounded-lg border border-green-500 bg-green-50 dark:bg-green-900/20 p-4 text-sm text-green-700 dark:text-green-300">
-                    Thank you for your message! I'll get back to you soon.
+                    <input type="hidden" name="name" value="{{ Auth::user()->name }}">
+                    <input type="hidden" name="email" value="{{ Auth::user()->email }}">
+                @endguest
+                
+                <!-- Multiple Image Upload -->
+                <div>
+                    <label for="images" class="block text-sm font-medium mb-1">
+                        Images <span class="text-red-500">*</span>
+                    </label>
+                    <input 
+                        id="images" 
+                        name="images[]" 
+                        type="file" 
+                        accept="image/*" 
+                        multiple 
+                        required
+                        class="w-full rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                    />
+                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                        Select multiple image files (JPG, PNG, GIF). Each image max 10MB.
+                    </p>
+                    @error('images')
+                        <div class="mt-2 rounded-md border border-red-300 bg-red-100 px-3 py-2 text-sm text-red-700 dark:border-red-700 dark:bg-red-900/40 dark:text-red-200">
+                            {{ $message }}
+                        </div>
+                    @enderror
+                    @error('images.*')
+                        <div class="mt-2 rounded-md border border-red-300 bg-red-100 px-3 py-2 text-sm text-red-700 dark:border-red-700 dark:bg-red-900/40 dark:text-red-200">
+                            {{ $message }}
+                        </div>
+                    @enderror
+                </div>
+
+                
+                <div>
+                    <label for="message" class="block text-sm font-medium mb-1">Message</label>
+                    <textarea id="message" name="message" rows="5" placeholder="Write your message..." class="w-full rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>{{ old('message') }}</textarea>
+                    @error('message')
+                        <div class="mt-2 rounded-md border border-red-300 bg-red-100 px-3 py-2 text-sm text-red-700 dark:border-red-700 dark:bg-red-900/40 dark:text-red-200">
+                            {{ $message }}
+                        </div>
+                    @enderror
+                </div>
+                <div class="pt-2">
+                    <button type="submit" class="inline-flex items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        Send Message
+                    </button>
+                </div>
+            </form>
+                <div id="contactSuccess" class="{{ session('success') ? 'opacity-100' : 'hidden opacity-0' }} transition-opacity duration-500 ease-in mt-6 rounded-lg border border-green-500 bg-green-50 dark:bg-green-900/20 p-4 text-sm text-green-700 dark:text-green-300">
+                    {{ session('success') ?? "Thank you for your message! I'll get back to you soon." }}
                 </div>
             </div>
         </div>
@@ -97,80 +155,4 @@
     </section>
 </div>
 @endsection
-
-@push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const form = document.getElementById('contactForm');
-        const successBanner = document.getElementById('contactSuccess');
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        const fields = ['name', 'email', 'message'];
-
-        const showError = (field, message) => {
-            const input = document.getElementById(field);
-            const errorBanner = document.querySelector(`[data-error-for="${field}"]`);
-
-            if (!input || !errorBanner) return;
-
-            if (message) {
-                errorBanner.textContent = message;
-                errorBanner.classList.remove('hidden');
-                errorBanner.classList.remove('opacity-100');
-                errorBanner.classList.add('opacity-0');
-
-                requestAnimationFrame(() => {
-                    errorBanner.classList.remove('opacity-0');
-                    errorBanner.classList.add('opacity-100');
-                });
-
-                input.classList.add('border-red-500', 'focus:ring-red-500');
-            } else {
-                errorBanner.textContent = '';
-                errorBanner.classList.add('hidden');
-                input.classList.remove('border-red-500', 'focus:ring-red-500');
-            }
-        };
-
-        const clearErrors = () => {
-            fields.forEach((field) => showError(field, null));
-        };
-
-        const showSuccess = () => {
-            successBanner.classList.remove('hidden');
-            successBanner.classList.remove('opacity-100');
-            successBanner.classList.add('opacity-0');
-
-            requestAnimationFrame(() => {
-                successBanner.classList.remove('opacity-0');
-                successBanner.classList.add('opacity-100');
-            });
-        };
-
-        fields.forEach((field) => {
-            const input = document.getElementById(field);
-            if (!input) return;
-
-            input.addEventListener('input', () => {
-                if (input.value.trim().length > 0) {
-                    showError(field, null);
-                }
-            });
-        });
-
-        form.addEventListener('submit', (event) => {
-            event.preventDefault();
-            clearErrors();
-            successBanner.classList.add('hidden');
-
-            const formData = new FormData(form);
-
-            setTimeout(() => {
-                form.reset();
-                clearErrors();
-                showSuccess();
-            }, 600);
-        });
-    });
-</script>
-@endpush
 

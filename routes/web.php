@@ -1,100 +1,64 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PortfolioController;
-use App\Http\Controllers\PageController;
-use App\Http\Controllers\Admin\GalleryController;
-use App\Http\Controllers\Admin\TravelCategoryController;
-use App\Http\Controllers\Admin\TravelPhotoController;
-use App\Http\Controllers\Admin\MediaCategoryController;
-use App\Http\Controllers\Admin\MediaItemController;
+use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\ContactController;
-use App\Http\Middleware\EnsureTokenIsValid;
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\PortfolioController;
+use Illuminate\Support\Facades\Route;
 
-// Public routes
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+// Public pages
+Route::view('/', 'welcome')->name('home');
 Route::get('/coding', [PortfolioController::class, 'coding'])->name('coding');
 Route::get('/editing', [PortfolioController::class, 'editing'])->name('editing');
 Route::get('/travel', [PortfolioController::class, 'travel'])->name('travel');
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.submit');
+Route::post('/upload-image', [ContactController::class, 'uploadImage'])->name('upload.image');
+Route::view('/error', 'error')->name('error');
 
-Route::get('/error', function () {
-    return view('error');
-})->name('error');
+Route::middleware(['auth', 'check.role:admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/gallery-overview', [AdminDashboardController::class, 'index'])->name('gallery-overview');
 
-Route::middleware(['auth'])->group(function () {
-    // Admin routes
-    Route::middleware(['check.role:admin'])->prefix('admin')->name('admin.')->group(function () {
-        Route::get('/home', [GalleryController::class, 'index'])->name('home');
-        Route::get('/site', [PageController::class, 'site'])->name('site');
-        Route::post('/site', function () { return back()->with('success', 'Saved.'); })->name('site.store');
-        Route::get('/gallery', [GalleryController::class, 'index'])->name('gallery');
-        Route::get('/coding', [GalleryController::class, 'coding'])->name('coding');
-        Route::get('/coding/create', function () { return view('admin.coding-create'); })->name('coding.create');
-        Route::get('/coding/{id}/edit', function () { return view('admin.coding-edit'); })->name('coding.edit');
-        // Placeholder endpoints so views can render without backend handlers
-        Route::post('/coding', function () { return back(); })->name('coding.store');
-        Route::delete('/coding/{filename}', function () { return back(); })->name('coding.destroy');
+        Route::controller(ContactMessageController::class)
+            ->prefix('contact-messages')
+            ->name('contact-messages.')
+            ->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('/create', 'create')->name('create');
+                Route::post('/', 'store')->name('store');
+                Route::patch('/{contactMessage}', 'update')->name('update');
+                Route::delete('/{contactMessage}', 'destroy')->name('destroy');
+                Route::post('/{id}/restore', 'restore')->name('restore');
+                Route::delete('/{id}/force', 'forceDelete')->name('force-delete');
+            });
 
-        Route::get('/media', [GalleryController::class, 'media'])->name('media');
-        Route::get('/media/create', function () { return view('admin.media-create'); })->name('media.create');
-        Route::get('/media/{id}/edit', function () { return view('admin.media-edit'); })->name('media.edit');
-        // Placeholder media ingestion endpoints
-        Route::post('/media/youtube', function () { return response()->json(['ok' => true]); })->name('media.youtube');
-        Route::post('/media/instagram', function () { return response()->json(['ok' => true]); })->name('media.instagram');
-        Route::get('/media-categories', [MediaCategoryController::class, 'index'])->name('media-categories.index');
-        Route::get('/media-items', [MediaItemController::class, 'index'])->name('media-items.index');
-        Route::get('/travel', [GalleryController::class, 'travel'])->name('travel');
-        Route::get('/travel/create', function () { return view('admin.travel-create'); })->name('travel.create');
-        Route::get('/travel/{id}/edit', function () { return view('admin.travel-edit'); })->name('travel.edit');
-        Route::post('/travel', function () { return back(); })->name('travel.store');
-        Route::delete('/travel/{category}', function () { return back(); })->name('travel.destroy');
-        Route::get('/travel-categories', [TravelCategoryController::class, 'index'])->name('travel-categories');
-        Route::get('/travel-photos', [TravelPhotoController::class, 'index'])->name('travel-photos');
+        Route::controller(PageController::class)->group(function () {
+            Route::get('/site-settings', 'site')->name('site-settings');
+            Route::post('/site-settings', 'storeSite')->name('site-settings.store');
+        });
 
-        Route::get('/contact-messages', [ContactMessageController::class, 'index'])->name('contact-messages.index');
-        Route::patch('/contact-messages/{contactMessage}', [ContactMessageController::class, 'update'])->name('contact-messages.update');
-        Route::delete('/contact-messages/{contactMessage}', [ContactMessageController::class, 'destroy'])->name('contact-messages.destroy');
-        Route::post('/contact-messages/{id}/restore', [ContactMessageController::class, 'restore'])->name('contact-messages.restore');
-        Route::delete('/contact-messages/{id}/force', [ContactMessageController::class, 'forceDelete'])->name('contact-messages.force-delete');
+        // Placeholder modules
+        Route::view('/posts', 'admin.posts.index')->name('posts.index');
+        Route::view('/posts/create', 'admin.posts.create')->name('posts.create');
+        Route::view('/posts/{id}/edit', 'admin.posts.edit')->name('posts.edit');
 
-        // Admin: posts (static views)
-        Route::get('/posts', function () {
-            return view('admin.posts.index');
-        })->name('posts.index');
-        Route::get('/posts/create', function () {
-            return view('admin.posts.create');
-        })->name('posts.create');
-        Route::get('/posts/{id}/edit', function () {
-            return view('admin.posts.edit');
-        })->name('posts.edit');
+        Route::any('/coding-projects', fn () => abort(404))->name('coding-projects');
+        Route::any('/media-library', fn () => abort(404))->name('media-library');
     });
 
-    // User routes 
-    Route::middleware(['check.role:user'])->group(function () {
-        // User posts list (static)
-        Route::get('/posts', function () {
-            return view('user.posts.index');
-        })->name('user.posts.index');
+Route::middleware(['auth', 'check.role:user'])->group(function () {
+    Route::view('/user/dashboard', 'dashboard')->name('user.dashboard');
 
-        Route::get('/user/dashboard', function () {
-        return view('dashboard');
-        })->name('user.dashboard');
-
-        // Static individual post view (user role)
-        Route::get('/posts/{id}', function () {
-            return view('user.posts.show');
-        })->name('user.posts.show');
-
-        // User: static form to add/submit a post
-        Route::get('/posts/create', function () {
-            return view('user.posts.create');
-        })->name('user.posts.create');
+    Route::prefix('posts')->name('user.posts.')->group(function () {
+        Route::view('/', 'user.posts.index')->name('index');
+        Route::view('/create', 'user.posts.create')->name('create');
+        Route::view('/{id}', 'user.posts.show')->name('show');
     });
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

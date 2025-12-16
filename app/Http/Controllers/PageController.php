@@ -25,6 +25,32 @@ class PageController extends Controller
         return view('admin.site', compact('aboutText', 'heroTitle', 'socials'));
     }
 
+    public function storeSite(Request $request)
+    {
+        $request->validate([
+            'about_text' => 'required|string|max:2000',
+            'hero_title' => 'required|string|max:255',
+            'github' => 'nullable|url',
+            'linkedin' => 'nullable|url',
+            'instagram' => 'nullable|url',
+            'youtube' => 'nullable|url',
+        ]);
+
+        Storage::disk('public')->put('site_about.txt', $request->about_text);
+        Storage::disk('public')->put('site_hero_title.txt', $request->hero_title);
+
+        $socials = [
+            'github' => $request->github,
+            'linkedin' => $request->linkedin,
+            'instagram' => $request->instagram,
+            'youtube' => $request->youtube,
+        ];
+
+        Storage::disk('public')->put('site_socials.txt', json_encode($socials));
+
+        return redirect()->back()->with('success', 'Site content updated successfully!');
+    }
+
     private function getSiteContent($type)
     {
         $defaults = [

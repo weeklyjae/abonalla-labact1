@@ -89,32 +89,15 @@
                             Upload, organize, and manage photos across all your portfolios.
                         </p>
                         <div class="space-y-2">
-                            <a href="{{ route('admin.gallery') }}" 
+                            <a href="{{ route('admin.media-library') }}" 
                                class="block w-full text-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors">
-                                Manage Gallery
+                                Manage Media Library
                             </a>
-                            <a href="{{ route('admin.coding') }}" 
+                            <a href="{{ route('admin.coding-projects') }}" 
                                class="block w-full text-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors">
                                 Manage Coding Projects
                             </a>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Travel Categories -->
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
-                    <div class="p-6">
-                        <div class="flex items-center mb-4">
-                            <span class="text-2xl mr-3">✈️</span>
-                            <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">Travel Categories</h3>
-                        </div>
-                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                            Organize your travel photos by trip categories like "Bangkok Trip", "Taiwan Trip".
-                        </p>
-                        <a href="{{ route('admin.travel') }}" 
-                           class="block w-full text-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors">
-                            Manage Travel Photos
-                        </a>
                     </div>
                 </div>
 
@@ -128,7 +111,7 @@
                         <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
                             Update your about page, social media links, and site information.
                         </p>
-                        <a href="{{ route('admin.site') }}" 
+                        <a href="{{ route('admin.site-settings') }}" 
                            class="block w-full text-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors">
                             Site Settings
                         </a>
